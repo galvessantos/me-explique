@@ -1,0 +1,49 @@
+/* navbar.scss */
+nav {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .navbar-container {
+    max-width: 64rem;        /* igual a max-w-5xl */
+    margin: 0 auto;
+    padding: 1rem 1.5rem;    /* py-4 px-6 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5rem;       /* text-2xl */
+    font-weight: 700;        /* font-bold */
+    color: #7c3aed;          /* purple-600 */
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #6b21a8;        /* purple-700 */
+    }
+  }
+
+  .nav-menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+
+    /* espaçamento igual a space-x-6 */
+    li + li {
+      margin-left: 1.5rem;
+    }
+
+    a {
+      color: #4b5563;        /* gray-600 */
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &.active,
+      &:hover {
+        color: #7c3aed;      /* purple-600 */
+      }
+    }
+  }
+}

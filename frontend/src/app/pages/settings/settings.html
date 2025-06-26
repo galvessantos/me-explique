@@ -1,0 +1,17 @@
+<div class="settings-content">
+  <h1>Configurações</h1>
+
+  <div class="field">
+    <label for="theme">Tema</label>
+    <select
+      id="theme"
+      name="theme"
+      [(ngModel)]="theme"
+      (change)="toggleTheme(theme)"
+    >
+      <option value="light">Claro</option>
+      <option value="dark">Escuro</option>
+    </select>
+  </div>
+    <button type="submit" class="btn-save">Salvar Configurações</button>
+</div>

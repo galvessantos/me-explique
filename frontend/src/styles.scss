@@ -1,0 +1,22 @@
+/* Defina variáveis de cor */
+:root {
+  --bg-color: #f9fafb;
+  --fg-color: #1f2937;
+  --card-bg: #ffffff;
+}
+
+/* Tema escuro */
+body.dark {
+  --bg-color: #1f1f2e;
+  --fg-color: #f3f4f6;
+  --card-bg: #2a2a3d;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--fg-color);
+}
+
+.card, .settings-content, .tts-card {
+  background: var(--card-bg);
+}

@@ -1,0 +1,39 @@
+/* src/app/pages/home/home.scss */
+.home-content {
+
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+
+  > * + * {
+    margin-top: 2.5rem;
+  }
+}
+
+.section-card {
+  
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+
+
+  h2 {
+    font-size: 1.25rem;        
+    font-weight: 600;
+    color: #1f2937;            
+    margin-bottom: 1rem;      
+  }
+}
+
+.text-cards {
+ 
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

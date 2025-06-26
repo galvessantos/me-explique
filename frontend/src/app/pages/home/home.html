@@ -1,0 +1,24 @@
+<div class="home-content">
+ 
+  <section class="section-card">
+    <h2>Upload Document</h2>
+    
+    <app-upload-card (fileUploaded)="onFileUploaded($event)"></app-upload-card>
+  </section>
+
+
+  <section class="text-cards">
+    <app-original-text-card [text]="originalText"></app-original-text-card>
+    <app-simplified-text-card [text]="simplifiedText"></app-simplified-text-card>
+  </section>
+
+ <section class="section-card">
+  <app-chat></app-chat>
+</section>
+
+<section class="section-card">
+  <app-tts-controls
+    (play)="onPlayTts()"
+    (pause)="onPauseTts()"
+  ></app-tts-controls>
+</section>

@@ -1,0 +1,25 @@
+<div class="chat-card">
+  <div class="chat-header">
+    Escreva sua duvida.
+  </div>
+
+  <div class="chat-messages">
+    <div *ngFor="let msg of messages" class="message" [ngClass]="msg.author === 'User' ? 'message--user' : 'message--bot'">
+      <strong>{{ msg.author }}:</strong> {{ msg.text }}
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input
+      type="text"
+      [(ngModel)]="newQuestion"
+      placeholder="Escreva sua duvida."
+      (keydown.enter)="send()"
+    />
+    <button (click)="send()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="send-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2.01 21L23 12 2.01 3v7l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+</div>

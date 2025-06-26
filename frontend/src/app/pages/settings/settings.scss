@@ -1,0 +1,86 @@
+/* src/app/pages/settings/settings.scss */
+
+.settings-content {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.10),
+    0 3px 6px rgba(0, 0, 0, 0.05);
+
+  h1 {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #111827;
+  }
+
+  form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.5rem;
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #4b5563;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+      }
+
+      select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        color: #111827;
+        background: #f9fafb;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:hover {
+          border-color: #c7d2fe;
+        }
+
+        &:focus {
+          border-color: #8b5cf6;
+          box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+          outline: none;
+        }
+      }
+    }
+
+    /* botão ocupa toda a largura em telas menores e fica à direita em telas grandes */
+    .btn-save {
+      grid-column: 1 / -1;
+      justify-self: end;
+      padding: 0.75rem 1.5rem;
+      background: #8b5cf6;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        background: #7c3aed;
+        box-shadow: 0 4px 8px rgba(124, 58, 237, 0.2);
+      }
+
+      @media (max-width: 640px) {
+        width: 100%;
+        justify-self: center;
+      }
+    }
+  }
+}
