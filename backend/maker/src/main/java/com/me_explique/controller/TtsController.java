@@ -71,9 +71,33 @@ public class TtsController {
         }
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<TtsStatus> getStatus() {
+        return ResponseEntity.ok(new TtsStatus(
+                ttsService.isGoogleCloudEnabled(),
+                ttsService.isGoogleCloudEnabled() ? "Google Cloud TTS ativo" : "Modo desenvolvimento - configure GOOGLE_APPLICATION_CREDENTIALS"
+        ));
+    }
+
     @GetMapping("/voices")
     public ResponseEntity<TtsService.VoiceType[]> getAvailableVoices() {
         return ResponseEntity.ok(TtsService.VoiceType.values());
+    }
+
+    public static class TtsStatus {
+        private boolean googleCloudEnabled;
+        private String message;
+
+        public TtsStatus(boolean googleCloudEnabled, String message) {
+            this.googleCloudEnabled = googleCloudEnabled;
+            this.message = message;
+        }
+
+        public boolean isGoogleCloudEnabled() { return googleCloudEnabled; }
+        public void setGoogleCloudEnabled(boolean googleCloudEnabled) { this.googleCloudEnabled = googleCloudEnabled; }
+
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
     }
 
     public static class TtsRequest {
