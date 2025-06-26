@@ -1,9 +1,12 @@
 <div class="home-content">
  
-  <section class="section-card">
-    <h2>Upload Document</h2>
-    
-    <app-upload-card (fileUploaded)="onFileUploaded($event)"></app-upload-card>
+  <section>
+     <div class="section-card upload-section">
+    <h2>Upload de Documento</h2>
+  <app-upload-card
+  (fileDropped)="onFileUpload($event)"
+       ></app-upload-card>
+     </div>
   </section>
 
 

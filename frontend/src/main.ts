@@ -7,6 +7,7 @@ import {
   provideZoneChangeDetection
 } from '@angular/core';
 
+
 import { AppComponent } from './app/app';
 import { appRoutes }    from './app/app.routes';
 
@@ -14,6 +15,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient(),
     provideHttpClient(),
     provideRouter(appRoutes)
   ]

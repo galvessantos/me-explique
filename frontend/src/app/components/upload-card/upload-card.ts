@@ -1,6 +1,11 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService }   from '../../services/api';
 
 @Component({
   selector: 'app-upload-card',
@@ -10,25 +15,39 @@ import { ApiService }   from '../../services/api';
   styleUrls: ['./upload-card.scss'],
 })
 export class UploadCardComponent {
-  @Output() fileUploaded = new EventEmitter<{ original: string; simplified: string }>();
+  @ViewChild('fileInput', { read: ElementRef })
+  fileInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private api: ApiService) {}
+  @Output()
+  fileDropped = new EventEmitter<File>();
 
-  onDragOver(evt: DragEvent) { evt.preventDefault(); }
+  /** Abre o file picker */
+  selectFile() {
+    this.fileInput.nativeElement.click();
+  }
+
+  /** Quando o usuário arrasta algo sobre a área */
+  onDragOver(evt: DragEvent) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    evt.dataTransfer!.dropEffect = 'copy';
+  }
+
+  /** Quando o usuário solta o arquivo */
   onDrop(evt: DragEvent) {
     evt.preventDefault();
-    if (evt.dataTransfer?.files.length) this.uploadFile(evt.dataTransfer.files[0]);
+    evt.stopPropagation();
+    const files = evt.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.fileDropped.emit(files[0]);
+    }
   }
+
+  /** Quando o usuário escolhe via file picker */
   onFileSelected(evt: Event) {
-    const file = (evt.target as HTMLInputElement).files?.[0];
-    if (file) this.uploadFile(file);
-  }
-  private uploadFile(file: File) {
-    const form = new FormData();
-    form.append('file', file);
-    this.api.uploadDocument(form).subscribe({
-      next: res => this.fileUploaded.emit({ original: res.originalText, simplified: res.simplifiedText }),
-      error: err => console.error(err),
-    });
+    const input = evt.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.fileDropped.emit(input.files[0]);
+    }
   }
 }

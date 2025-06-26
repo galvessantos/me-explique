@@ -22,6 +22,9 @@ import { TtsControlsComponent } from '../../components/tts-controls/tts-controls
   styleUrls: ['./home.scss'],
 })
 export class HomeComponent {
+onFileUpload($event: File) {
+throw new Error('Method not implemented.');
+}
 onPauseTts() {
 throw new Error('Method not implemented.');
 }
