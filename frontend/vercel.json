@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/explica-me-frontend",
+  "framework": "angular",
   "rewrites": [
     {
       "source": "/(.*)",
