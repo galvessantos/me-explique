@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.util.Base64;
 
 @Service
 public class TtsService {
@@ -26,9 +26,12 @@ public class TtsService {
         boolean available = false;
 
         try {
-            String credentialsJson = System.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON");
+            String credentialsBase64 = System.getenv("GOOGLE_APPLICATION_CREDENTIALS_BASE64");
 
-            if (credentialsJson != null && !credentialsJson.trim().isEmpty()) {
+            if (credentialsBase64 != null && !credentialsBase64.trim().isEmpty()) {
+                byte[] decodedBytes = Base64.getDecoder().decode(credentialsBase64);
+                String credentialsJson = new String(decodedBytes);
+
                 ServiceAccountCredentials credentials = ServiceAccountCredentials
                         .fromStream(new ByteArrayInputStream(credentialsJson.getBytes()));
 
@@ -38,7 +41,7 @@ public class TtsService {
                                 .build()
                 );
                 available = true;
-                logger.info("Google Cloud TTS iniciado com sucesso via JSON env var");
+                logger.info("Google Cloud TTS iniciado com sucesso via Base64 env var");
             } else {
                 client = TextToSpeechClient.create();
                 available = true;
@@ -120,7 +123,7 @@ public class TtsService {
                         "Voz: %s\n" +
                         "Velocidade: %.2f\n" +
                         "Tom: %.2f\n" +
-                        "Para habilitar TTS real, configure GOOGLE_APPLICATION_CREDENTIALS_JSON",
+                        "Para habilitar TTS real, configure GOOGLE_APPLICATION_CREDENTIALS_BASE64",
                 text, voiceType.getVoiceName(), speakingRate, pitch
         );
 
