@@ -19,6 +19,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/ocr")
 public class OcrController {
@@ -27,9 +28,9 @@ public class OcrController {
     private SimplificadorService service;
 
     @PostMapping("/ler-imagem")
-    public ResponseEntity<?> lerImagem(@RequestParam("imagem") MultipartFile imagem) {
+    public ResponseEntity<?> lerImagem(@RequestParam("file") MultipartFile file) {
         try {
-            InputStream inputStream = imagem.getInputStream();
+            InputStream inputStream = file.getInputStream();
             BufferedImage originalImage = ImageIO.read(inputStream);
 
             if (originalImage == null) {
@@ -37,7 +38,7 @@ public class OcrController {
             }
 
             // Corrigir orientação baseada em EXIF
-            originalImage = corrigirOrientacao(originalImage, imagem);
+            originalImage = corrigirOrientacao(originalImage, file);
 
             // Aumentar contraste (fator 1.5)
             RescaleOp rescaleOp = new RescaleOp(1.5f, 0, null);
@@ -75,8 +76,9 @@ public class OcrController {
             Map<String, String> resposta = new HashMap<>();
             resposta.put("textoOriginal", textoLimpo);
             resposta.put("textoSimplificado", textoSimplificado);
-
+            System.out.println("foi");
             return ResponseEntity.ok(resposta);
+
         } catch (TesseractException e) {
             return ResponseEntity.status(500).body("{\"erro\": \"Erro ao processar OCR: " + e.getMessage() + "\"}");
         } catch (Exception e) {
