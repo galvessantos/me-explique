@@ -12,5 +12,5 @@ export class ApiService {
       `${this.baseUrl}/ocr/ler-imagem`,
       form
     );
-  }
+
 }
