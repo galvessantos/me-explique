@@ -6,14 +6,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.sourceforge.tess4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.me_explique.service.SimplificadorService;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.drew.imaging.ImageMetadataReader; // Para ler metadados EXIF
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
@@ -23,6 +27,9 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 @RequestMapping("/api/ocr")
 @Tag(name = "OCR", description = "Serviço para Reconhecimento Óptico de Caracteres")
 public class OcrController {
+
+    @Autowired
+    private SimplificadorService service;
 
     @Operation(
             summary = "Extrai texto de uma imagem",
@@ -43,7 +50,7 @@ public class OcrController {
                 return ResponseEntity.status(400).body("{\"erro\": \"Imagem inválida ou formato não suportado.\"}");
             }
 
-            // Corrigir orientação baseada em EXIF (se disponível)
+            // Corrigir orientação baseada em EXIF
             originalImage = corrigirOrientacao(originalImage, imagem);
 
             // Aumentar contraste (fator 1.5)
@@ -62,20 +69,25 @@ public class OcrController {
 
             // Inicializar Tesseract
             Tesseract tesseract = new Tesseract();
-            tesseract.setDatapath("C:\\Tesseract-OCR\\tessdata"); // Ajuste para seu caminho
+            tesseract.setDatapath("C:\\Tesseract-OCR\\tessdata");
             tesseract.setLanguage("por");
-            tesseract.setPageSegMode(3); // 3 = Fully automatic page segmentation, mas pode testar outros
+            tesseract.setPageSegMode(3);
 
-            // Fazer OCR na imagem inteira (sem recorte)
+            // Fazer OCR na imagem inteira
             String textoExtraido = tesseract.doOCR(grayImage);
             String textoLimpo = textoExtraido.replaceAll("[\\r\\n]+", "\n").replace("\"", "\\\"").trim();
 
             if (textoLimpo.isEmpty()) {
                 textoLimpo = "Nenhum texto detectado";
             }
+            String textoSimplificado = service.simplificarTexto(textoLimpo);
 
-            return ResponseEntity.ok().body("{\"TextoOCR\": \"" + textoLimpo + "\"}");
+            // Criar JSON de resposta
+            Map<String, String> resposta = new HashMap<>();
+            resposta.put("textoOriginal", textoLimpo);
+            resposta.put("textoSimplificado", textoSimplificado);
 
+            return ResponseEntity.ok(resposta);
         } catch (TesseractException e) {
             return ResponseEntity.status(500).body("{\"erro\": \"Erro ao processar OCR: " + e.getMessage() + "\"}");
         } catch (Exception e) {
