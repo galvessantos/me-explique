@@ -14,6 +14,7 @@ import com.me_explique.service.SimplificadorService;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,10 @@ public class OcrController {
 
             // Inicializar Tesseract
             Tesseract tesseract = new Tesseract();
-            tesseract.setDatapath("C:\\Tesseract-OCR\\tessdata");
+
+            File tessDataFolder = new File(getClass().getClassLoader().getResource("tessdata").toURI());
+            tesseract.setDatapath(tessDataFolder.getAbsolutePath());
+
             tesseract.setLanguage("por");
             tesseract.setPageSegMode(3);
 
