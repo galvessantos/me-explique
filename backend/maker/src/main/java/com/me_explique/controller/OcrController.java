@@ -36,14 +36,11 @@ public class OcrController {
                 return ResponseEntity.status(400).body("{\"erro\": \"Imagem inválida ou formato não suportado.\"}");
             }
 
-            // Corrigir orientação baseada em EXIF
             originalImage = corrigirOrientacao(originalImage, file);
 
-            // Aumentar contraste (fator 1.5)
             RescaleOp rescaleOp = new RescaleOp(1.5f, 0, null);
             BufferedImage contrastedImage = rescaleOp.filter(originalImage, null);
 
-            // Converter para tons de cinza
             BufferedImage grayImage = new BufferedImage(
                     contrastedImage.getWidth(),
                     contrastedImage.getHeight(),
@@ -53,15 +50,13 @@ public class OcrController {
             g.drawImage(contrastedImage, 0, 0, null);
             g.dispose();
 
-            // Inicializar Tesseract
             Tesseract tesseract = new Tesseract();
 
             tesseract.setDatapath("/usr/share/tesseract-ocr/5/tessdata");
 
-            tesseract.setLanguage("por");
+            tesseract.setLanguage("eng");
             tesseract.setPageSegMode(3);
 
-            // Fazer OCR na imagem inteira
             String textoExtraido = tesseract.doOCR(grayImage);
             String textoLimpo = textoExtraido.replaceAll("[\\r\\n]+", "\n").replace("\"", "\\\"").trim();
 
@@ -70,7 +65,6 @@ public class OcrController {
             }
             String textoSimplificado = service.simplificarTexto(textoLimpo);
 
-            // Criar JSON de resposta
             Map<String, String> resposta = new HashMap<>();
             resposta.put("textoOriginal", textoLimpo);
             resposta.put("textoSimplificado", textoSimplificado);
