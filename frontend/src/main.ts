@@ -16,7 +16,6 @@ bootstrapApplication(AppComponent, {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(),
-    provideHttpClient(),
     provideRouter(appRoutes)
   ]
 }).catch(err => console.error(err));
