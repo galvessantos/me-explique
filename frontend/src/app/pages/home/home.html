@@ -1,0 +1,24 @@
+<div class="home-content">
+ 
+  <section>
+     <div class="section-card upload-section">
+    <h2>Upload de Documento</h2>
+  <app-upload-card
+  (fileDropped)="onFileUpload($event)"
+       ></app-upload-card>
+     </div>
+  </section>
+
+  <section class="text-cards">
+    <app-original-text-card [text]="originalText"></app-original-text-card>
+    <app-simplified-text-card [text]="simplifiedText"></app-simplified-text-card>
+  </section>
+
+
+
+<section class="section-card">
+  <app-tts-controls
+    (play)="onPlayTts()"
+    (pause)="onPauseTts()"
+  ></app-tts-controls>
+</section>

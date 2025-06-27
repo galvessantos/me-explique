@@ -1,0 +1,32 @@
+/* Light mode colors */
+:root {
+  --bg:            #f9fafb;
+  --text:          #111827;
+  --card-bg:       #ffffff;
+  --card-shadow:   rgba(0, 0, 0, 0.1);
+  --primary:       #8b5cf6;
+  --primary-hover: #7c3aed;
+}
+
+/* Dark mode overrides */
+body.dark {
+  --bg:            #1f2937;
+  --text:          #e5e7eb;
+  --card-bg:       #374151;
+  --card-shadow:   rgba(0, 0, 0, 0.5);
+  --primary:       #a78bfa;
+  --primary-hover: #8b5cf6;
+}
+
+/* Apply base styles */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Button default */
+button {
+  font-family: inherit;
+}

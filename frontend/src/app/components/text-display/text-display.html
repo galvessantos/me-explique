@@ -1,0 +1,12 @@
+<div class="text-display-container">
+  <app-original-text-card   [text]="originalText"></app-original-text-card>
+  <app-simplified-text-card [text]="simplifiedText"></app-simplified-text-card>
+
+  <app-tts-controls
+    [textToSpeak]="simplifiedText"
+    (play)="speak()"
+    (pause)="pauseSpeech()"
+    (stop)="stopSpeech()"
+    (rateChange)="adjustRate($event)"
+  ></app-tts-controls>
+</div>

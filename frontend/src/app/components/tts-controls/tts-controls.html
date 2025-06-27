@@ -1,0 +1,33 @@
+<div class="tts-card">
+  <!-- 1) Título -->
+  <div class="tts-header">Ouça seu texto</div>
+
+  <!-- 2) Botões -->
+  <div class="tts-buttons">
+    <button class="btn btn--purple" (click)="onPlay()">
+      <!-- ícone “play” -->
+      ▶ Play
+    </button>
+    <button class="btn btn--gray" (click)="onPause()">
+      ⏸️ Pause
+    </button>
+    <button class="btn btn--red" (click)="onStop()">
+      ⏹️ Stop
+    </button>
+  </div>
+
+  <!-- 3) Slider de velocidade -->
+  <div class="tts-slider">
+    <div class="labels">
+      <span>Slow</span>
+      <span>Fast</span>
+    </div>
+    <input
+      type="range"
+      min="0.5" max="2" step="0.1"
+      [(ngModel)]="speed"
+      (input)="onSpeedChange()"
+    />
+    <div class="current">Current: {{ speed.toFixed(1) }}x</div>
+  </div>
+</div>

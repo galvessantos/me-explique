@@ -1,0 +1,24 @@
+<div class="settings-container">
+  <div class="settings-card">
+    <h1 class="settings-title">Configurações</h1>
+
+    <form (ngSubmit)="onSubmit()" #settingsForm="ngForm" class="settings-form">
+      <div class="form-group">
+        <label for="tema" class="form-label">Tema</label>
+        <select
+          id="tema"
+          name="tema"
+          [(ngModel)]="theme"
+          class="form-select"
+        >
+          <option value="claro">Claro</option>
+          <option value="escuro">Escuro</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn--purple">
+        Salvar Configurações
+      </button>
+    </form>
+  </div>
+</div>
