@@ -1,14 +1,12 @@
 package com.me_explique.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.me_explique.service.SimplificadorService;
 
 
+@CrossOrigin(origins = {"http://localhost:4200", "https://me-explique-git-main-galvessantos-projects.vercel.app"})
 @RestController
 @RequestMapping("/api/simplificar")
 public class SimplificadorController {
