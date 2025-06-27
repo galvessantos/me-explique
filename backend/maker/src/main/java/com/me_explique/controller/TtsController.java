@@ -1,6 +1,12 @@
 package com.me_explique.controller;
 
+
 import com.me_explique.service.TtsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,12 +16,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/tts")
+@Tag(name = "TTS", description = "Serviço de Conversão de Texto para Fala (Text-to-Speech)")
 @CrossOrigin(origins = "*")
 public class TtsController {
 
     @Autowired
     private TtsService ttsService;
 
+    @Operation(
+            summary = "Converte texto para áudio (padrão)",
+            description = "Recebe um texto simples no corpo da requisição e o converte para um arquivo de áudio MP3 usando configurações de voz padrão.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Áudio gerado com sucesso", content = @Content(mediaType = "audio/mpeg")),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
     @PostMapping("/convert")
     public ResponseEntity<byte[]> convertTextToSpeech(@RequestBody String text) {
         try {
@@ -36,6 +51,14 @@ public class TtsController {
         }
     }
 
+    @Operation(
+            summary = "Converte texto para áudio (customizado)",
+            description = "Converte texto para áudio MP3, permitindo a customização da voz, velocidade da fala e tom.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Áudio gerado com sucesso", content = @Content(mediaType = "audio/mpeg")),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
     @PostMapping("/convert/custom")
     public ResponseEntity<byte[]> convertTextToSpeechCustom(@RequestBody TtsRequest request) {
         try {
