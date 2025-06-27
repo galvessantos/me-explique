@@ -1,11 +1,15 @@
 package com.me_explique.service;
 
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.texttospeech.v1.*;
 import com.me_explique.exception.TtsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @Service
 public class TtsService {
@@ -14,14 +18,32 @@ public class TtsService {
     private final TextToSpeechClient textToSpeechClient;
     private final boolean isGoogleCloudAvailable;
 
+    @Value("${google.credentials.json:}")
+    private String googleCredentialsJson;
+
     public TtsService() {
         TextToSpeechClient client = null;
         boolean available = false;
 
         try {
-            client = TextToSpeechClient.create();
-            available = true;
-            logger.info("Google Cloud TTS iniciado com sucesso");
+            String credentialsJson = System.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON");
+
+            if (credentialsJson != null && !credentialsJson.trim().isEmpty()) {
+                ServiceAccountCredentials credentials = ServiceAccountCredentials
+                        .fromStream(new ByteArrayInputStream(credentialsJson.getBytes()));
+
+                client = TextToSpeechClient.create(
+                        TextToSpeechSettings.newBuilder()
+                                .setCredentialsProvider(() -> credentials)
+                                .build()
+                );
+                available = true;
+                logger.info("Google Cloud TTS iniciado com sucesso via JSON env var");
+            } else {
+                client = TextToSpeechClient.create();
+                available = true;
+                logger.info("Google Cloud TTS iniciado com sucesso via credenciais padrão");
+            }
         } catch (Exception e) {
             logger.warn("Google Cloud TTS não disponível. Usando modo mock. Erro: {}", e.getMessage());
         }
@@ -98,7 +120,7 @@ public class TtsService {
                         "Voz: %s\n" +
                         "Velocidade: %.2f\n" +
                         "Tom: %.2f\n" +
-                        "Para habilitar TTS real, configure GOOGLE_APPLICATION_CREDENTIALS",
+                        "Para habilitar TTS real, configure GOOGLE_APPLICATION_CREDENTIALS_JSON",
                 text, voiceType.getVoiceName(), speakingRate, pitch
         );
 
