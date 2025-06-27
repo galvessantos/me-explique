@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/explica-me-frontend",
+  "outputDirectory": "dist",
   "framework": "angular",
   "rewrites": [
     {
