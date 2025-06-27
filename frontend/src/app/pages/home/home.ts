@@ -16,42 +16,83 @@ import { ApiService } from '../../services/api';
     OriginalTextCardComponent,
     SimplifiedTextCardComponent,
     TtsControlsComponent
-   
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
 export class HomeComponent {
 
-originalText  = '';
-simplifiedText = '';
+  originalText = '';
+  simplifiedText = '';
+  isLoading = false;
 
-constructor(private api: ApiService) {}
+  currentAudio: HTMLAudioElement | null = null;
 
-onFileUpload(file: File) {
+  constructor(private api: ApiService) {}
+
+  onFileUpload(file: File) {
+    this.isLoading = true;
+    this.originalText = 'Estamos fazendo o carregamento do seu texto...';
+    this.simplifiedText = 'A versão simplificada está sendo preparada...';
+
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file); 
 
     this.api.uploadDocument(formData).subscribe({
       next: (res) => {
         this.originalText = res.textoOriginal;
         this.simplifiedText = res.textoSimplificado;
-        console.log(this.simplifiedText)
+        this.isLoading = false;
+        console.log('Upload realizado com sucesso:', res);
       },
       error: (err) => {
         console.error('Erro ao enviar imagem:', err);
+        this.originalText = 'Erro ao processar a imagem';
+        this.simplifiedText = 'Tente novamente com outra imagem';
+        this.isLoading = false;
       }
     });
   }
-onPauseTts() {
-throw new Error('Method not implemented.');
-}
-onPlayTts() {
-throw new Error('Method not implemented.');
-}
-  
-  onFileUploaded(e: { original: string; simplified: string }) {
-    this.originalText   = e.original;
-    this.simplifiedText = e.simplified;
+
+  onPlayTts() {
+    if (!this.simplifiedText || this.simplifiedText.includes('sendo preparada')) {
+      console.log('Texto não está pronto para TTS');
+      return;
+    }
+
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
+
+    this.api.convertTextToSpeech(this.simplifiedText).subscribe({
+      next: (audioBlob) => {
+        const audioUrl = URL.createObjectURL(audioBlob);
+        this.currentAudio = new Audio(audioUrl);
+        this.currentAudio.play().catch(err => {
+          console.error('Erro ao reproduzir áudio:', err);
+        });
+      },
+      error: (err) => {
+        console.error('Erro ao gerar áudio:', err);
+      }
+    });
+  }
+
+  onPauseTts() {
+    if (this.currentAudio) {
+      if (this.currentAudio.paused) {
+        this.currentAudio.play();
+      } else {
+        this.currentAudio.pause();
+      }
+    }
+  }
+
+  onStopTts() {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+    }
   }
 }
