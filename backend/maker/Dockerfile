@@ -33,4 +33,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE $PORT
 
 # Comando para executar
-CMD ["java", "-Dserver.port=$PORT", "-jar", "target/maker-simplificador-0.0.1-SNAPSHOT.jar"]
+CMD ["sh", "-c", "java -Dserver.port=$PORT -jar target/maker-simplificador-0.0.1-SNAPSHOT.jar"]
