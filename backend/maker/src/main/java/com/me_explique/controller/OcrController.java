@@ -1,5 +1,10 @@
 package com.me_explique.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.sourceforge.tess4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -22,11 +27,21 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 
 @RestController
 @RequestMapping("/api/ocr")
+@Tag(name = "OCR", description = "Serviço para Reconhecimento Óptico de Caracteres")
 public class OcrController {
 
     @Autowired
     private SimplificadorService service;
 
+    @Operation(
+            summary = "Extrai texto de uma imagem",
+            description = "Recebe um arquivo de imagem (PNG, JPG, etc.), processa-a para melhorar a qualidade e extrai o texto contido nela usando o Tesseract.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Texto extraído com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"TextoOCR\": \"Texto extraído da imagem\"}"))),
+                    @ApiResponse(responseCode = "400", description = "Imagem inválida ou formato não suportado", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"erro\": \"Imagem inválida ou formato não suportado.\"}"))),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor durante o processamento", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"erro\": \"Erro ao processar OCR: ...\"}")))
+            }
+    )
     @PostMapping("/ler-imagem")
     public ResponseEntity<?> lerImagem(@RequestParam("file") MultipartFile file) {
         try {
