@@ -1,4 +1,4 @@
-package com.me_explique.maker.controller;
+package com.me_explique.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.me_explique.maker.service.SimplificadorService;
+import com.me_explique.service.SimplificadorService;
 
 
 @RestController

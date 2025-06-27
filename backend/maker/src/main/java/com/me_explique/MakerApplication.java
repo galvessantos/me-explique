@@ -1,4 +1,4 @@
-package com.me_explique.maker;
+package com.me_explique;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
