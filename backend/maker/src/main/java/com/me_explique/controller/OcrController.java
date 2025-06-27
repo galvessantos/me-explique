@@ -1,4 +1,4 @@
-package com.me_explique.maker.controller;
+package com.me_explique.controller;
 
 import net.sourceforge.tess4j.*;
 import org.springframework.http.ResponseEntity;
