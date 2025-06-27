@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import com.me_explique.service.SimplificadorService;
 
 
-@CrossOrigin(origins = {"http://localhost:4200", "https://me-explique-git-main-galvessantos-projects.vercel.app"})
 @RestController
 @RequestMapping("/api/simplificar")
 public class SimplificadorController {

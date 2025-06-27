@@ -19,7 +19,6 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 
-@CrossOrigin(origins = {"http://localhost:4200", "https://me-explique-git-main-galvessantos-projects.vercel.app"})
 @RestController
 @RequestMapping("/api/ocr")
 public class OcrController {
