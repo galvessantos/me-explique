@@ -2,6 +2,7 @@ package com.me_explique.controller;
 
 import net.sourceforge.tess4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,8 +53,8 @@ public class OcrController {
 
             Tesseract tesseract = new Tesseract();
 
-            File tessDataFolder = new File("tessdata");
-            tesseract.setDatapath(tessDataFolder.getAbsolutePath());
+            String tessDataPath = new ClassPathResource("tessdata").getFile().getAbsolutePath();
+            tesseract.setDatapath(tessDataPath);
 
             tesseract.setLanguage("por");
             tesseract.setPageSegMode(3);
