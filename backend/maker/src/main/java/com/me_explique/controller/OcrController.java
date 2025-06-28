@@ -53,8 +53,9 @@ public class OcrController {
 
             Tesseract tesseract = new Tesseract();
 
-            String tessDataPath = new ClassPathResource("tessdata").getFile().getAbsolutePath();
-            tesseract.setDatapath(tessDataPath);
+            File tessDataFolder = new File("tessdata");
+            tesseract.setDatapath(tessDataFolder.getAbsolutePath());
+
 
             tesseract.setLanguage("por");
             tesseract.setPageSegMode(3);

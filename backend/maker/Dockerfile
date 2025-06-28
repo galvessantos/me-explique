@@ -16,6 +16,7 @@ COPY pom.xml .
 COPY mvnw .
 COPY mvnw.cmd .
 COPY .mvn .mvn
+COPY tessdata /app/tessdata
 
 # Dar permissão para mvnw
 RUN chmod +x mvnw
