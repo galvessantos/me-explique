@@ -14,11 +14,11 @@
     <app-simplified-text-card [text]="simplifiedText"></app-simplified-text-card>
   </section>
 
-
-
 <section class="section-card">
   <app-tts-controls
     (play)="onPlayTts()"
     (pause)="onPauseTts()"
+    (stop)="onStopTts()"
+    (rateChange)="onSpeedChange($event)"
   ></app-tts-controls>
-</section>
+</section></div>

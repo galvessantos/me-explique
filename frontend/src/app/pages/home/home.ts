@@ -27,6 +27,8 @@ export class HomeComponent {
   isLoading = false;
 
   currentAudio: HTMLAudioElement | null = null;
+  currentSpeed = 1.0;
+  isUsingWebApi = false; 
 
   constructor(private api: ApiService) {}
 
@@ -60,27 +62,67 @@ export class HomeComponent {
       return;
     }
 
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio = null;
+    this.stopCurrentAudio();
+
+    if ('speechSynthesis' in window) {
+      this.playWithWebSpeechAPI();
+    } else {
+      this.playWithGoogleCloudTTS();
     }
+  }
+
+  private playWithWebSpeechAPI() {
+    this.isUsingWebApi = true;
+    
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(this.simplifiedText);
+    utterance.lang = 'pt-BR';
+    utterance.rate = this.currentSpeed;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    utterance.onstart = () => console.log('TTS iniciado');
+    utterance.onend = () => console.log('TTS finalizado');
+    utterance.onerror = (event) => console.error('Erro no TTS:', event);
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  private playWithGoogleCloudTTS() {
+    this.isUsingWebApi = false;
 
     this.api.convertTextToSpeech(this.simplifiedText).subscribe({
       next: (audioBlob) => {
         const audioUrl = URL.createObjectURL(audioBlob);
         this.currentAudio = new Audio(audioUrl);
+        
+        this.currentAudio.playbackRate = this.currentSpeed;
+        
         this.currentAudio.play().catch(err => {
           console.error('Erro ao reproduzir áudio:', err);
         });
+
+        this.currentAudio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          this.currentAudio = null;
+        };
       },
       error: (err) => {
         console.error('Erro ao gerar áudio:', err);
+        this.playWithWebSpeechAPI();
       }
     });
   }
 
   onPauseTts() {
-    if (this.currentAudio) {
+    if (this.isUsingWebApi) {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+      } else if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } else if (this.currentAudio) {
       if (this.currentAudio.paused) {
         this.currentAudio.play();
       } else {
@@ -90,9 +132,34 @@ export class HomeComponent {
   }
 
   onStopTts() {
-    if (this.currentAudio) {
+    this.stopCurrentAudio();
+  }
+
+  private stopCurrentAudio() {
+    if (this.isUsingWebApi) {
+      window.speechSynthesis.cancel();
+    } else if (this.currentAudio) {
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
+    }
+  }
+
+  onSpeedChange(newSpeed: number) {
+    this.currentSpeed = newSpeed;
+    
+    if (this.isUsingWebApi && window.speechSynthesis.speaking) {
+      const wasPlaying = !window.speechSynthesis.paused;
+      window.speechSynthesis.cancel();
+      
+      if (wasPlaying) {
+        setTimeout(() => {
+          this.playWithWebSpeechAPI();
+        }, 100);
+      }
+    } 
+    else if (this.currentAudio && !this.currentAudio.paused) {
+      this.currentAudio.playbackRate = newSpeed;
     }
   }
 }
