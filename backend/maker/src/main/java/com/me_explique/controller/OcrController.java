@@ -52,9 +52,10 @@ public class OcrController {
 
             Tesseract tesseract = new Tesseract();
 
-            tesseract.setDatapath("/usr/share/tesseract-ocr/5/tessdata");
+            File tessDataFolder = new File("tessdata");
+            tesseract.setDatapath(tessDataFolder.getAbsolutePath());
 
-            tesseract.setLanguage("eng");
+            tesseract.setLanguage("por");
             tesseract.setPageSegMode(3);
 
             String textoExtraido = tesseract.doOCR(grayImage);
