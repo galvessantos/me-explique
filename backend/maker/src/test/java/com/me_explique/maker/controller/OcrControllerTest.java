@@ -64,14 +64,14 @@ public class OcrControllerTest {
 
     @Test
     public void quandoEnviarImagemValida_deveRetornarTextosOriginalESimplificado() throws Exception {
-        MockMultipartFile imagemValida = new MockMultipartFile("imagem", "teste.png", "image/png", "bytes".getBytes());
+        MockMultipartFile imagemValida = new MockMultipartFile("file", "teste.png", "image/png", "bytes".getBytes());
         BufferedImage realBlankImage = new BufferedImage(100, 50, BufferedImage.TYPE_BYTE_GRAY);
 
         imageIOStaticMock.when(() -> ImageIO.read(any(InputStream.class))).thenReturn(realBlankImage);
         metadataReaderStaticMock.when(() -> ImageMetadataReader.readMetadata(any(InputStream.class))).thenReturn(mock(Metadata.class));
 
         String textoDoOcr = "   texto extraído com \n\r problemas de formatação. ";
-        String textoLimpoEsperado = textoDoOcr.replaceAll("[\\r\\n]+", "\n").replace("\"", "\\\"").trim();
+        String textoLimpoEsperado = "texto extraído com \n problemas de formatação.";
         String textoSimplificadoEsperado = "Texto simplificado pelo serviço mockado.";
 
         when(mockSimplificadorService.simplificarTexto(textoLimpoEsperado)).thenReturn(textoSimplificadoEsperado);
@@ -90,8 +90,36 @@ public class OcrControllerTest {
     }
 
     @Test
+    public void quandoOcrNaoDetectaTexto_deveRetornarMensagemApropriada() throws Exception {
+        MockMultipartFile imagemVazia = new MockMultipartFile("file", "vazia.png", "image/png", "bytes".getBytes());
+        BufferedImage realBlankImage = new BufferedImage(100, 50, BufferedImage.TYPE_BYTE_GRAY);
+
+        imageIOStaticMock.when(() -> ImageIO.read(any(InputStream.class))).thenReturn(realBlankImage);
+        metadataReaderStaticMock.when(() -> ImageMetadataReader.readMetadata(any(InputStream.class))).thenReturn(mock(Metadata.class));
+
+        String textoDoOcr = "   ";
+        String textoLimpoEsperado = "Nenhum texto detectado";
+        String textoSimplificadoEsperado = "Texto simplificado da mensagem de erro.";
+
+        when(mockSimplificadorService.simplificarTexto(textoLimpoEsperado)).thenReturn(textoSimplificadoEsperado);
+
+        try (MockedConstruction<Tesseract> tesseractConstructionMock = mockConstruction(Tesseract.class, (mock, context) -> {
+            when(mock.doOCR(any(BufferedImage.class))).thenReturn(textoDoOcr);
+            doNothing().when(mock).setDatapath(anyString());
+        })) {
+            mockMvc.perform(multipart("/api/ocr/ler-imagem").file(imagemVazia))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.textoOriginal").value(textoLimpoEsperado))
+                    .andExpect(jsonPath("$.textoSimplificado").value(textoSimplificadoEsperado));
+        }
+
+        verify(mockSimplificadorService, times(1)).simplificarTexto(textoLimpoEsperado);
+    }
+
+
+    @Test
     public void quandoImagemForInvalida_deveRetornarBadRequest() throws Exception {
-        MockMultipartFile arquivoInvalido = new MockMultipartFile("imagem", "invalido.png", "image/png", "bytes".getBytes());
+        MockMultipartFile arquivoInvalido = new MockMultipartFile("file", "invalido.png", "image/png", "bytes".getBytes());
         imageIOStaticMock.when(() -> ImageIO.read(any(InputStream.class))).thenReturn(null);
 
         mockMvc.perform(multipart("/api/ocr/ler-imagem").file(arquivoInvalido))
@@ -103,7 +131,7 @@ public class OcrControllerTest {
 
     @Test
     public void quandoOcrLancaExcecao_deveRetornarErro500() throws Exception {
-        MockMultipartFile imagemValida = new MockMultipartFile("imagem", "teste.png", "image/png", "bytes".getBytes());
+        MockMultipartFile imagemValida = new MockMultipartFile("file", "teste.png", "image/png", "bytes".getBytes());
         BufferedImage realBlankImage = new BufferedImage(100, 50, BufferedImage.TYPE_BYTE_GRAY);
 
         imageIOStaticMock.when(() -> ImageIO.read(any(InputStream.class))).thenReturn(realBlankImage);
@@ -125,14 +153,14 @@ public class OcrControllerTest {
 
     @Test
     public void quandoSimplificadorServiceLancaExcecao_deveRetornarErro500() throws Exception {
-        MockMultipartFile imagemValida = new MockMultipartFile("imagem", "teste.png", "image/png", "bytes".getBytes());
+        MockMultipartFile imagemValida = new MockMultipartFile("file", "teste.png", "image/png", "bytes".getBytes());
         BufferedImage realBlankImage = new BufferedImage(100, 50, BufferedImage.TYPE_BYTE_GRAY);
 
         imageIOStaticMock.when(() -> ImageIO.read(any(InputStream.class))).thenReturn(realBlankImage);
         metadataReaderStaticMock.when(() -> ImageMetadataReader.readMetadata(any(InputStream.class))).thenReturn(mock(Metadata.class));
 
         String textoDoOcr = "texto qualquer";
-        String textoLimpoEsperado = textoDoOcr.trim();
+        String textoLimpoEsperado = "texto qualquer";
         String mensagemErro = "Erro de rede na API";
 
         when(mockSimplificadorService.simplificarTexto(textoLimpoEsperado)).thenThrow(new IOException(mensagemErro));

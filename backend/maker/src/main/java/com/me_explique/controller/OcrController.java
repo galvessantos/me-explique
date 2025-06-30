@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.sourceforge.tess4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,10 +34,10 @@ public class OcrController {
     private SimplificadorService service;
 
     @Operation(
-            summary = "Extrai texto de uma imagem",
-            description = "Recebe um arquivo de imagem (PNG, JPG, etc.), processa-a para melhorar a qualidade e extrai o texto contido nela usando o Tesseract.",
+            summary = "Extrai e simplifica texto de uma imagem",
+            description = "Recebe um arquivo de imagem (PNG, JPG, etc.), processa-a para melhorar a qualidade, extrai o texto com Tesseract e retorna uma versão original e outra simplificada.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Texto extraído com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"TextoOCR\": \"Texto extraído da imagem\"}"))),
+                    @ApiResponse(responseCode = "200", description = "Textos extraído e simplificado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"textoOriginal\": \"Texto extraído da imagem\",\"textoSimplificado\": \"Versão simplificada do texto.\"}"))),
                     @ApiResponse(responseCode = "400", description = "Imagem inválida ou formato não suportado", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"erro\": \"Imagem inválida ou formato não suportado.\"}"))),
                     @ApiResponse(responseCode = "500", description = "Erro interno no servidor durante o processamento", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"erro\": \"Erro ao processar OCR: ...\"}")))
             }
